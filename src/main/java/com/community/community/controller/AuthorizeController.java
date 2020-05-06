@@ -22,7 +22,7 @@ public class AuthorizeController {
     @Autowired
     private GithubProvider githubProvider;
 
-    @Value("${github.client.id}")
+    @Value("${github.client.id}")       //在property中赋值的一种方法
     private String client_id;
 
     @Value("${github.client.secret}")
@@ -34,11 +34,16 @@ public class AuthorizeController {
     @Autowired(required = false)
     private UserMapper userMapper;
 
-    @GetMapping("/callback")
-    public String callback(@RequestParam(name="code") String code,
+    @GetMapping("/callback")  //操作后缀有callback的位置
+    public String callback(@RequestParam(name="code") String code,  //得到/callback后面变量名为code的值赋给string code
                            @RequestParam(name="state") String state,
                            HttpServletRequest request,
                            HttpServletResponse response) {
+        //输入用户名密码成功后，github会redirect到index写里的/authorize地址，并携带者一个code（会在设置的callback的uri后面？code=...&state=...）
+        //社区需要再携带这个github传回来的code，来获取access_token
+        //github会返回access_token
+        //社区调用github的user api并携带access_token来获取user信息
+        //如果access_token正确，github会返回给社区user的信息
         AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
         accessTokenDTO.setCode(code);
         accessTokenDTO.setState(state);
@@ -49,6 +54,7 @@ public class AuthorizeController {
         GithubUser githubUser = githubProvider.getUser(accessToken);
         //System.out.println(user.getName());
         if (githubUser != null) {
+            //已经连接成功github，创建数据库model user加入到数据库中，为了保持登陆状态
             User user = new User();
             String token = UUID.randomUUID().toString();
             user.setToken(token);
@@ -56,7 +62,7 @@ public class AuthorizeController {
             user.setAccountId(String.valueOf(githubUser.getId()));
             user.setGmtCreate(System.currentTimeMillis());
             user.setGmtModified(user.getGmtCreate());
-            userMapper.insert(user);
+            userMapper.insert(user);        //insert进数据库
             response.addCookie(new Cookie("token", token));
             //登陆成功，写cookie和session
             //request.getSession().setAttribute("user", githubUser);
