@@ -73,7 +73,7 @@ public class AuthorizeController {
 
             return "redirect:/";
         }
-        return "redirect:/";
+        return "redirect:/"; //这个redirect可以改变url为“/”，但是页面还是当前页面 **还需再查一下具体
     }
 
 

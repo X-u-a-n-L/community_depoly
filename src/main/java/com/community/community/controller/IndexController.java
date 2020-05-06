@@ -14,17 +14,17 @@ public class IndexController {
     @Autowired(required = false)
     private UserMapper userMapper;
 
-    @GetMapping("/")
+    @GetMapping("/")        //因为在AuthorizeController里最后redirect的是“/”，所以mapping的是“/”
     public String index(HttpServletRequest request) {
 
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("token")) {
-                    String token = cookie.getValue();
-                    User user = userMapper.findByToken(token);
+                    String token = cookie.getValue();   //先从cookie里得到token
+                    User user = userMapper.findByToken(token);//再从后台数据库看有没有该token值的user
                     if (user != null) {
-                        request.getSession().setAttribute("user", user);
+                        request.getSession().setAttribute("user", user);//数据库中有从cookie里得到的token所对应的user，再把它存到session里
                     }
                     break;
                 }
