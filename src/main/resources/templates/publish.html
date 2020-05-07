@@ -1,0 +1,91 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>发布 - 社区</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="css/community.css"/>
+    <script src="js/bootstrap.js/bootstrap.min.js" type="application/javascript"></script>
+</head>
+<body>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">论坛</span>
+
+            </button>
+            <a class="navbar-brand" href="#">论坛</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <form class="navbar-form navbar-left">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="搜索话题">
+                </div>
+                <button type="submit" class="btn btn-default">Submit</button>
+            </form>
+            <ul class="nav navbar-nav navbar-right">
+                <li th:if="${session.user != null}">
+                    <a href="/publish">发布</a>
+                </li>
+                <li class="dropdown" th:if="${session.user != null}">   <!--如果session中有user 就把名字改为user的name -->
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false" th:text="${session.user.getName()}"><span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">消息中心</a></li>
+                        <li><a href="#">个人资料</a></li>
+                        <li><a href="#">退出登录</a></li>
+                    </ul>
+                </li>
+                <li th:if="${session.user == null}">    <!--如果session没有user 就连接到登陆页面，并且显示“登录”-->
+                    <a href="https://github.com/login/oauth/authorize?client_id=84653d3ce81ad7b7992c&redirect_uri=http://localhost:8080/callback&scope=user&state=1">登录</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container-fluid main">
+    <div class="row">
+        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+            <h2><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>发起</h2>
+            <hr>
+            <form action="/publish" method="post">
+                <div class="form-group">
+                    <label for="title">问题标题(简单扼要)</label>
+                    <input type="text" class="form-control" th:value="${title}"  id="title" name="title" placeholder="问题标题...">
+                </div>                      <!--用th:value 就可以显示在input中，如果这里用的是th:text，浏览器会当成这个文本就是一个text，而不在input中，会在下一行错误的显示-->
+                <div class="form-group">
+                    <label for="description">问题补充(参考右边提示)</label>
+                    <textarea name="description" th:text="${description}"  id="description" class="form-control" cols="30" rows="10"></textarea>
+                </div>                      <!--这里还是写th:text因为这个是textarea不是input-->
+                <div class="form-group">
+                    <label for="tag">添加标签</label>
+                    <input type="text" class="form-control" th:value="${tag}"  id="tag" name="tag" placeholder="输入标签，以逗号分割">
+                </div>
+
+                <div class="container-fluid main">
+                    <div class="row">
+                        <div class="alert alert-danger col-lg-9 col-md-12 col-sm-12 col-xs-12" th:text="${error}" th:if="${error != null}"></div>
+                        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+                            <button type="submit" class="btn btn-success btn-publish">发布</button>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+            <h3>问题指南：没有指南</h3>
+            <br>问题指南:没有指南
+            <br>问题指南:没有指南
+            <br>问题指南:没有指南
+        </div>
+    </div>
+</div>
+</body>
+</html>
