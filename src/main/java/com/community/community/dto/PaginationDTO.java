@@ -16,21 +16,22 @@ public class PaginationDTO {
     private List<Integer> pages = new ArrayList<>();
     private Integer totalPage;
 
-    public void setPagination(Integer totalCount, Integer page, Integer size) {
-        //totalCount/size
-        if (totalCount % size == 0) {   //totalCount是数据库有多少条数据，totalPage是数据库里的数据应该分多少页
-            totalPage = totalCount/size;
-        }
-        else {
-            totalPage = (totalCount/size) + 1;
-        }
-        //加一些限定page范围
-        if (page < 1) {
-            page = 1;
-        }
-        if (page > totalPage) {
-            page = totalPage;
-        }
+    public void setPagination(Integer totalPage, Integer page) {
+//        //totalCount/size
+//        if (totalCount % size == 0) {   //totalCount是数据库有多少条数据，totalPage是数据库里的数据应该分多少页
+//            totalPage = totalCount/size;
+//        }
+//        else {
+//            totalPage = (totalCount/size) + 1;
+//        }
+//        //加一些限定page范围
+//        if (page < 1) {
+//            page = 1;
+//        }
+//        if (page > totalPage) {
+//            page = totalPage;
+//        }
+        this.totalPage = totalPage;
         this.page = page;
         //把该加进来的page加进来//当前page+左边3个+右边3个
         pages.add(page);

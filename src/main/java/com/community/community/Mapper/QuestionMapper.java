@@ -19,4 +19,10 @@ public interface QuestionMapper {
 
     @Select("select count(1) from question") //count(1)比count(*)更快。不过现在经过优化二者没什么区别了
     Integer count();
+
+    @Select("select * from Question where creator = #{userId} limit #{offset}, #{size}")
+    List<Question> listByUserId(@Param("userId") Integer userId, @Param(value = "offset") Integer offset, @Param(value = "size") Integer size);
+
+    @Select("select count(1) from question where creator = #{userId}")
+    Integer countByUserId(Integer userId);
 }
