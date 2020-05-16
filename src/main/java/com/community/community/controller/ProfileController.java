@@ -1,6 +1,5 @@
 package com.community.community.controller;
 
-import com.community.community.Mapper.UserMapper;
 import com.community.community.dto.PaginationDTO;
 import com.community.community.model.User;
 import com.community.community.service.QuestionService;
@@ -11,13 +10,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class ProfileController {
-    @Autowired(required = false)
-    private UserMapper userMapper;
 
     @Autowired(required = false)
     private QuestionService questionService;
@@ -28,20 +24,9 @@ public class ProfileController {
                           HttpServletRequest request,
                           @RequestParam(name = "page", defaultValue = "1") Integer page,
                           @RequestParam(name = "size", defaultValue = "5") Integer size) {
-        Cookie[] cookies = request.getCookies();
-        User user = null;
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("token")) {
-                    String token = cookie.getValue();   //先从cookie里得到token
-                    user = userMapper.findByToken(token);//再从后台数据库看有没有该token值的user
-                    if (user != null) {
-                        request.getSession().setAttribute("user", user);//数据库中有从cookie里得到的token所对应的user，再把它存到session里
-                    }
-                    break;
-                }
-            }
-        }
+        //这里通过拦截器判断cookie
+
+        User user = (User) request.getSession().getAttribute("user");
 
         if (user == null) {
             return "redirect:/";

@@ -1,7 +1,6 @@
 package com.community.community.controller;
 
 import com.community.community.Mapper.QuestionMapper;
-import com.community.community.Mapper.UserMapper;
 import com.community.community.model.Question;
 import com.community.community.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
@@ -20,9 +18,6 @@ public class PublishController {
     private QuestionMapper questionMapper;
     //publish的Get方法就渲染页面
     //publish的Post方法就执行请求
-
-    @Autowired(required = false)
-    private UserMapper userMapper;
 
     @GetMapping("/publish")
     public String publish(){
@@ -53,21 +48,9 @@ public class PublishController {
             return "publish";
         }
 
-        //验证用户是否登录
-        User user = null;
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("token")) {
-                    String token = cookie.getValue();   //先从cookie里得到token
-                    user = userMapper.findByToken(token);//再从后台数据库看有没有该token值的user
-                    if (user != null) {
-                        request.getSession().setAttribute("user", user);//数据库中有从cookie里得到的token所对应的user，再把它存到session里
-                    }
-                    break;
-                }
-            }
-        }
+        //通过拦截器验证用户是否登录
+
+        User user = (User) request.getSession().getAttribute("user");
         if (user == null) {
             model.addAttribute("error", "用户未登录");
             return "publish";
