@@ -16,4 +16,6 @@ public class WebConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(sessionInterceptor).addPathPatterns("/**");//表明哪些经过interceptor处理，excludePathPatterns哪些不经过
     }
+
+
 }
