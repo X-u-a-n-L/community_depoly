@@ -36,7 +36,7 @@
                         <ul class="dropdown-menu">
                             <li><a href="/profile/questions">我的发布</a></li>
                             <!--<li><a href="#">个人资料</a></li>-->
-                            <li><a href="#">退出登录</a></li>
+                            <li><a href="/logout">退出登录</a></li>
                         </ul>
                     </li>
                     <li th:if="${session.user == null}">    <!--如果session没有user 就连接到登陆页面，并且显示“登录”-->

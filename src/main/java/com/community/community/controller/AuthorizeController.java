@@ -1,10 +1,10 @@
 package com.community.community.controller;
 
-import com.community.community.Mapper.UserMapper;
 import com.community.community.dto.AccessTokenDTO;
 import com.community.community.dto.GithubUser;
 import com.community.community.model.User;
 import com.community.community.provider.GithubProvider;
+import com.community.community.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -32,7 +32,7 @@ public class AuthorizeController {
     private String redirect_uri;
 
     @Autowired(required = false)
-    private UserMapper userMapper;
+    private UserService userService;
 
     @GetMapping("/callback")  //操作后缀有callback的位置
     public String callback(@RequestParam(name="code") String code,  //得到/callback后面变量名为code的值赋给string code
@@ -60,10 +60,8 @@ public class AuthorizeController {
             user.setToken(token);
             user.setName(githubUser.getName());
             user.setAccountId(String.valueOf(githubUser.getId()));
-            user.setGmtCreate(System.currentTimeMillis());
-            user.setGmtModified(user.getGmtCreate());
             user.setAvatarUrl(githubUser.getAvatarUrl());
-            userMapper.insert(user);        //insert进数据库
+            userService.createOrUpdate(user);
             response.addCookie(new Cookie("token", token));
             //登陆成功，写cookie和session
             //request.getSession().setAttribute("user", githubUser);
@@ -77,5 +75,15 @@ public class AuthorizeController {
         return "redirect:/"; //这个redirect可以改变url为“/”，但是页面还是当前页面 **还需再查一下具体
     }
 
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request,//session set by request, cookie set by response
+                         HttpServletResponse response) {
+
+        request.getSession().removeAttribute("user");
+        Cookie cookie = new Cookie("token", null);//delete cookie
+        cookie.setMaxAge(0);//delete right now
+        response.addCookie(cookie);
+        return "redirect:/";
+    }
 
 }
