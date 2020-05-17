@@ -1,12 +1,14 @@
 package com.community.community.controller;
 
-import com.community.community.Mapper.QuestionMapper;
+import com.community.community.dto.QuestionDTO;
 import com.community.community.model.Question;
 import com.community.community.model.User;
+import com.community.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -14,8 +16,11 @@ import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class PublishController {
+
     @Autowired(required = false)
-    private QuestionMapper questionMapper;
+    private QuestionService questionService;
+
+
     //publish的Get方法就渲染页面
     //publish的Post方法就执行请求
 
@@ -26,9 +31,10 @@ public class PublishController {
 
     @PostMapping("/publish")
     public String doPublish(
-            @RequestParam("title") String title,
-            @RequestParam("description") String description,
-            @RequestParam("tag") String tag,
+            @RequestParam(value = "title", required = false) String title,
+            @RequestParam(value = "description", required = false) String description,
+            @RequestParam(value = "tag", required = false) String tag,
+            @RequestParam(value = "id", required = false) Integer id,
             HttpServletRequest request,
             Model model) {
         model.addAttribute("title", title);
@@ -61,11 +67,24 @@ public class PublishController {
         question.setDescription(description);
         question.setTag(tag);
         question.setCreator(user.getId());
-        question.setGmtCreate(System.currentTimeMillis());
-        question.setGmtModified(question.getGmtCreate());
-        //创建questionMapper，插入到数据库中
-        questionMapper.create(question);
+        question.setId(id);
+        //创建questionMapper->questionService，插入到数据库中
+        questionService.createOrUpdate(question);
         return "redirect:/";
 
+    }
+    //编辑方法
+
+    @GetMapping("/publish/{id}")  //this is can be got from below pathVariable
+    public String edit(@PathVariable(name = "id") Integer id,
+                       Model model) {
+
+        QuestionDTO question = questionService.getById(id);
+        model.addAttribute("title", question.getTitle());
+        model.addAttribute("description", question.getDescription());
+        model.addAttribute("tag", question.getTag());
+        model.addAttribute("id", question.getId());
+
+        return "publish";
     }
 }
