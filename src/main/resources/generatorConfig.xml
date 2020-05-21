@@ -30,6 +30,8 @@
 
         <table tableName="user" domainObjectName="User" > <!--domain object name same as the model-->
         </table>
+        <table tableName="comment" domainObjectName="Comment" >
+        </table>
 
     </context>
 </generatorConfiguration>
