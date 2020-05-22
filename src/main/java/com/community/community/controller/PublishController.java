@@ -34,7 +34,7 @@ public class PublishController {
             @RequestParam(value = "title", required = false) String title,
             @RequestParam(value = "description", required = false) String description,
             @RequestParam(value = "tag", required = false) String tag,
-            @RequestParam(value = "id", required = false) Integer id,
+            @RequestParam(value = "id", required = false) Long id,
             HttpServletRequest request,
             Model model) {
         model.addAttribute("title", title);
@@ -76,7 +76,7 @@ public class PublishController {
     //编辑方法
 
     @GetMapping("/publish/{id}")  //this is can be got from below pathVariable
-    public String edit(@PathVariable(name = "id") Integer id,
+    public String edit(@PathVariable(name = "id") Long id,
                        Model model) {
 
         QuestionDTO question = questionService.getById(id);

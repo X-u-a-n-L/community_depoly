@@ -58,7 +58,7 @@ public class QuestionService {
         return paginationDTO;
     }
 
-    public PaginationDTO list(Integer userId, Integer page, Integer size) {
+    public PaginationDTO list(Long userId, Integer page, Integer size) {
 
         PaginationDTO paginationDTO = new PaginationDTO();
         Integer totalCount = questionMapper.countByUserId(userId);
@@ -95,7 +95,7 @@ public class QuestionService {
         return paginationDTO;
     }
 
-    public QuestionDTO getById(Integer id) {
+    public QuestionDTO getById(Long id) {
         Question question = questionMapper.getById(id);
         QuestionDTO questionDTO = new QuestionDTO();
         BeanUtils.copyProperties(question, questionDTO); //快速的把question的所有属性拷贝到questionDTO
@@ -109,6 +109,9 @@ public class QuestionService {
             //create
             question.setGmtCreate(System.currentTimeMillis());
             question.setGmtModified(question.getGmtCreate());
+            question.setViewCount(0);
+            question.setCommentCount(0);
+            question.setLikeCount(0);
             questionMapper.create(question);
         }
         else {
@@ -118,8 +121,13 @@ public class QuestionService {
         }
     }
 
-    public void incViews(Integer id) {
+    public void incViews(Long id) {
         Question question = questionMapper.getById(id);
         questionMapper.updateViewCount(question);//viewCount + 1
+    }
+    public void incCommentCount (Long id) {
+        Question question = questionMapper.getById(id);
+        questionMapper.updateCommentCount(question);//comment count + 1
+
     }
 }

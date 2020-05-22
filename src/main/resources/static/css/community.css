@@ -17,6 +17,10 @@ body{
     height: 38px;
 }
 
+.media-body {
+    padding-top: 9px;
+}
+
 .text-desc {
     font-size: 12px;
     font-weight: normal;
@@ -31,5 +35,10 @@ body{
     color: #999;
     font-size: 13px;
 }
+
+.comment {
+    margin: 10px 0;
+}
+
 
 
