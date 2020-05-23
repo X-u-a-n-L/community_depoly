@@ -31,7 +31,7 @@ public class CommentController {
 
         User user = (User) request.getSession().getAttribute("user");
         if (user == null) {
-            return ResultDTO.errorOf(2002, "请先登录");
+            return ResultDTO.errorOf(2003, "请先登录");
         }
 
         Comment comment = new Comment();

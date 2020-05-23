@@ -9,6 +9,18 @@
     <script src="js/jquery-3.5.1.min.js"></script>
     <script src="js/bootstrap.min.js" type="application/javascript"></script>
 </head>
+<script type="application/javascript">
+    window.onload = function () {
+        var closable = window.localStorage.getItem("closable");
+        if (closable == "true") {  //前端返回的是String类型
+            var questionId = window.localStorage.getItem("questionId");
+            window.open("/question/" + questionId.toString());
+            window.localStorage.removeItem("questionId");
+            window.close();
+            window.localStorage.removeItem("closable");
+        }
+    }
+</script>
 <body>
 <div th:insert="~{navigation :: nav}"></div> <!--把写成其他文件的导航栏引入进来，这个相当于include进来一个方法-->
 <div class="container-fluid main">
