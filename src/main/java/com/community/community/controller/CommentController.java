@@ -1,7 +1,7 @@
 package com.community.community.controller;
 
 import com.community.community.Mapper.CommentMapper;
-import com.community.community.dto.CommentDTO;
+import com.community.community.dto.CommentCreateDTO;
 import com.community.community.dto.ResultDTO;
 import com.community.community.model.Comment;
 import com.community.community.model.User;
@@ -26,7 +26,7 @@ public class CommentController {
 
     @ResponseBody
     @RequestMapping(value = "/comment", method = RequestMethod.POST)
-    public Object post(@RequestBody CommentDTO commentDTO,
+    public Object post(@RequestBody CommentCreateDTO commentCreateDTO,
                        HttpServletRequest request) throws Exception {
 
         User user = (User) request.getSession().getAttribute("user");
@@ -35,9 +35,9 @@ public class CommentController {
         }
 
         Comment comment = new Comment();
-        comment.setParentId(commentDTO.getParentId());
-        comment.setType(commentDTO.getType());
-        comment.setContent(commentDTO.getContent());
+        comment.setParentId(commentCreateDTO.getParentId());
+        comment.setType(commentCreateDTO.getType());
+        comment.setContent(commentCreateDTO.getContent());
         comment.setGmtModified(System.currentTimeMillis());
         comment.setGmtCreate(System.currentTimeMillis());
         comment.setCommentator(user.getId());
