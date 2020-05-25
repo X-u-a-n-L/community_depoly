@@ -13,7 +13,7 @@ function post() {
         }),
         success: function (response) {   //this response is the return value from the comment controller
             if (response.code == 200) {
-                $("#comment_section").hide();
+                window.location.reload(); //refresh the page
             }
             else {
                 if (response.code == 2003) {

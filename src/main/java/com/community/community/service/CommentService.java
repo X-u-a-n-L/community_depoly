@@ -60,6 +60,7 @@ public class CommentService {
         example.createCriteria()
                 .andParentIdEqualTo(id)
                 .andTypeEqualTo(CommentTypeEnum.QUESTION.getType());
+        example.setOrderByClause("like_count desc");  //set comment order by like_count descending
         List<Comment> comments = commentMapper.selectByExample(example);
 
         if (comments.size() == 0) {

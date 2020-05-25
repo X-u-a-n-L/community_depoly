@@ -6,6 +6,7 @@ import com.community.community.dto.ResultDTO;
 import com.community.community.model.Comment;
 import com.community.community.model.User;
 import com.community.community.service.CommentService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,6 +33,9 @@ public class CommentController {
         User user = (User) request.getSession().getAttribute("user");
         if (user == null) {
             return ResultDTO.errorOf(2003, "请先登录");
+        }
+        if (commentCreateDTO == null || StringUtils.isBlank(commentCreateDTO.getContent())) {
+            return ResultDTO.errorOf(2004, "评论内容不能为空");
         }
 
         Comment comment = new Comment();
