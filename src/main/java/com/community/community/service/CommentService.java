@@ -1,5 +1,6 @@
 package com.community.community.service;
 
+import com.community.community.Mapper.CommentExtMapper;
 import com.community.community.Mapper.CommentMapper;
 import com.community.community.Mapper.QuestionMapper;
 import com.community.community.Mapper.UserMapper;
@@ -32,6 +33,9 @@ public class CommentService {
     @Autowired(required = false)
     private UserMapper userMapper;
 
+    @Autowired(required = false)
+    private CommentExtMapper commentExtMapper;
+
     @Transactional  //事务化，如果comment insert成功，increase comment number 没成功就会回滚comment insert， 因为是事务
     public void insert(Comment comment) throws Exception {
         if (comment.getParentId() == null || comment.getParentId() == 0 || comment.getType() == null) {
@@ -44,6 +48,12 @@ public class CommentService {
                 throw new Exception("null");
             }
             commentMapper.insert(comment);
+
+            //增加评论数
+            Comment parentComment = new Comment();
+            parentComment.setId(comment.getParentId());
+            parentComment.setCommentCount(1);
+            commentExtMapper.incCommentCount(parentComment);
         } else {
             //no parent, comment on question
             Question question = questionMapper.getById(comment.getParentId());
@@ -55,11 +65,11 @@ public class CommentService {
         }
     }
 
-    public List<CommentDTO> listByQuestionId(Long id) {
+    public List<CommentDTO> listByQuestionIdOrCommentId(Long id, CommentTypeEnum type) {
         CommentExample example = new CommentExample();
         example.createCriteria()
                 .andParentIdEqualTo(id)
-                .andTypeEqualTo(CommentTypeEnum.QUESTION.getType());
+                .andTypeEqualTo(type.getType());
         example.setOrderByClause("like_count desc");  //set comment order by like_count descending
         List<Comment> comments = commentMapper.selectByExample(example);
 
