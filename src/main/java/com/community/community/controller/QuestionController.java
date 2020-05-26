@@ -33,6 +33,10 @@ public class QuestionController {
         QuestionDTO questionDTO = questionService.getById(id);
         model.addAttribute("question", questionDTO);
         model.addAttribute("comments", comments);//throw it in front end page
+
+        //related question
+        List<QuestionDTO> relatedQuestions = questionService.listRelatedQuestions(questionDTO);
+        model.addAttribute("relatedQuestions", relatedQuestions);
         return "question";
     }
 }

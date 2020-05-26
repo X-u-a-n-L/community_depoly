@@ -6,12 +6,15 @@ import com.community.community.dto.PaginationDTO;
 import com.community.community.dto.QuestionDTO;
 import com.community.community.model.Question;
 import com.community.community.model.User;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service        //项目中需要组装user和question时，需要中间层做这个事，service就是这个作用
 public class QuestionService {
@@ -129,5 +132,26 @@ public class QuestionService {
         Question question = questionMapper.getById(id);
         questionMapper.updateCommentCount(question);//comment count + 1
 
+    }
+
+    public List<QuestionDTO> listRelatedQuestions(QuestionDTO queryDTO) {
+        if (StringUtils.isBlank(queryDTO.getTag())) {
+            return new ArrayList<>();
+        }
+        //先把tag改为以 | 隔开
+        String[] tags = StringUtils.split(queryDTO.getTag(), ",");
+        String regexpTag = Arrays.stream(tags).collect(Collectors.joining("|"));
+        Question question = new Question();
+        question.setId(queryDTO.getId());
+        question.setTag(regexpTag);
+        //从db中查找有关各个tag的问题放入list
+        List<Question> relatedQuestions = questionMapper.listRelatedQuestion(question);
+        //把每个查到的question转换为questionDTO
+        List<QuestionDTO> questionDTOS = relatedQuestions.stream().map(q -> {
+            QuestionDTO questionDTO = new QuestionDTO();
+            BeanUtils.copyProperties(q, questionDTO);
+            return questionDTO;
+        }).collect(Collectors.toList());
+        return questionDTOS;
     }
 }
