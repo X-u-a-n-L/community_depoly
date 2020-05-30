@@ -1,11 +1,10 @@
 package com.community.community.service;
 
-import com.community.community.Mapper.CommentExtMapper;
-import com.community.community.Mapper.CommentMapper;
-import com.community.community.Mapper.QuestionMapper;
-import com.community.community.Mapper.UserMapper;
+import com.community.community.Mapper.*;
 import com.community.community.dto.CommentDTO;
 import com.community.community.enums.CommentTypeEnum;
+import com.community.community.enums.NotificationStatusEnum;
+import com.community.community.enums.NotificationTypeEnum;
 import com.community.community.model.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +35,11 @@ public class CommentService {
     @Autowired(required = false)
     private CommentExtMapper commentExtMapper;
 
+    @Autowired(required = false)
+    private NotificationMapper notificationMapper;
+
     @Transactional  //事务化，如果comment insert成功，increase comment number 没成功就会回滚comment insert， 因为是事务
-    public void insert(Comment comment) throws Exception {
+    public void insert(Comment comment, User commentator) throws Exception {
         if (comment.getParentId() == null || comment.getParentId() == 0 || comment.getType() == null) {
             throw new Exception("parent comment not found");
         }
@@ -47,6 +49,12 @@ public class CommentService {
             if (dbComment == null) {
                 throw new Exception("null");
             }
+
+            Question question = questionMapper.getById(dbComment.getParentId());
+            if (question == null) {
+                throw new Exception("parent question not found");
+            }
+
             commentMapper.insert(comment);
 
             //增加评论数
@@ -54,6 +62,8 @@ public class CommentService {
             parentComment.setId(comment.getParentId());
             parentComment.setCommentCount(1);
             commentExtMapper.incCommentCount(parentComment);
+            //创建通知
+            createNotify(comment, dbComment.getCommentator(), commentator.getName(), question.getTitle(), NotificationTypeEnum.REPLY_COMMENT, question.getId());
         } else {
             //no parent, comment on question
             Question question = questionMapper.getById(comment.getParentId());
@@ -62,7 +72,23 @@ public class CommentService {
             }
             commentMapper.insert(comment);
             questionService.incCommentCount(question.getId());
+
+            //创建通知
+            createNotify(comment, question.getCreator(), commentator.getName(), question.getTitle(), NotificationTypeEnum.REPLY_QUESTION, question.getId());
         }
+    }
+                            //参数：【创建者，收到通知的人，发出通知的人（回复的人），通知的标题，类型（回复问题还是回复评论），问题的id（这个id用来点击返回到问题页面）】
+    private void createNotify(Comment comment, Long receiver, String notifierName, String outerTitle, NotificationTypeEnum notificationType, Long outerId) {
+        Notification notification = new Notification();
+        notification.setGmtCreate(System.currentTimeMillis());
+        notification.setType(notificationType.getType());
+        notification.setOuterid(outerId);
+        notification.setNotifier(comment.getCommentator());
+        notification.setStatus(NotificationStatusEnum.UNREAD.getStatus());
+        notification.setReceiver(receiver);
+        notification.setNotifierName(notifierName);
+        notification.setOuterTitle(outerTitle);
+        notificationMapper.insert(notification);
     }
 
     public List<CommentDTO> listByQuestionIdOrCommentId(Long id, CommentTypeEnum type) {

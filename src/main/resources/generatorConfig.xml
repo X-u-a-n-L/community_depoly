@@ -5,6 +5,8 @@
 
 <generatorConfiguration>
     <context id="DB2Tables" targetRuntime="MyBatis3">
+
+        <plugin type="org.mybatis.generator.plugins.RowBoundsPlugin"></plugin><!--pagination-->
         <jdbcConnection driverClass="org.h2.Driver"
                         connectionURL="jdbc:h2:~/community"
                         userId="sa"
@@ -31,6 +33,8 @@
         <table tableName="user" domainObjectName="User" > <!--domain object name same as the model-->
         </table>
         <table tableName="comment" domainObjectName="Comment" >
+        </table>
+        <table tableName="notification" domainObjectName="Notification" >
         </table>
 
     </context>
