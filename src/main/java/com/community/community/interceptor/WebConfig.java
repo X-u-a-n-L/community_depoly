@@ -15,6 +15,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(sessionInterceptor).addPathPatterns("/**");//表明哪些经过interceptor处理，excludePathPatterns哪些不经过
+                                                                            //“/**”表明主路径下所有都要检查
     }
 
 
