@@ -17,10 +17,12 @@ public class IndexController {
     @GetMapping("/")        //因为在AuthorizeController里最后redirect的是“/”，所以mapping的是“/”
     public String index(Model model,
                         @RequestParam(name = "page", defaultValue = "1") Integer page,
-                        @RequestParam(name = "size", defaultValue = "5") Integer size) {
+                        @RequestParam(name = "size", defaultValue = "5") Integer size,
+                        @RequestParam(name = "search", required = false) String search) {
 
-        PaginationDTO pagination = questionService.list(page, size);//原先是全部展示，input的page和size来控制分页
+        PaginationDTO pagination = questionService.list(search, page, size);//原先是全部展示，input的page和size来控制分页
         model.addAttribute("pagination", pagination);
+        model.addAttribute("search", search);
         return "index";
     }
 }

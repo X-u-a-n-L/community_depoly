@@ -4,6 +4,7 @@ import com.community.community.Mapper.QuestionMapper;
 import com.community.community.Mapper.UserMapper;
 import com.community.community.dto.PaginationDTO;
 import com.community.community.dto.QuestionDTO;
+import com.community.community.dto.QuestionQueryDTO;
 import com.community.community.model.Question;
 import com.community.community.model.User;
 import org.apache.commons.lang3.StringUtils;
@@ -25,10 +26,24 @@ public class QuestionService {
     @Autowired(required = false)
     private UserMapper userMapper;
 
-    public PaginationDTO list(Integer page, Integer size) {
+    public PaginationDTO list(String search, Integer page, Integer size) {
+
+        if (StringUtils.isNotBlank(search)) {
+            String[] tags = StringUtils.split(search, " ");
+            search = Arrays.stream(tags).collect(Collectors.joining("|"));
+        }
 
         PaginationDTO paginationDTO = new PaginationDTO();
-        Integer totalCount = questionMapper.count();
+        QuestionQueryDTO questionQueryDTO = new QuestionQueryDTO();
+        Integer totalCount;
+        if (search == null) {
+            totalCount = questionMapper.count();
+        }
+        else {
+            questionQueryDTO.setSearch(search);
+            totalCount = (int) questionMapper.countBySearch(questionQueryDTO);
+        }
+
         Integer totalPage;
         if (totalCount % size == 0) {   //totalCount是数据库有多少条数据，totalPage是数据库里的数据应该分多少页
             totalPage = totalCount/size;
@@ -46,7 +61,15 @@ public class QuestionService {
         paginationDTO.setPagination(totalPage, page);
         //size*(page - 1)
         Integer offset = size * (page - 1);
-        List<Question> questions = questionMapper.list(offset, size);
+        List<Question> questions;
+        if (search == null) {
+            questions = questionMapper.list(offset, size);
+        }
+        else {
+            questionQueryDTO.setSize(size);
+            questionQueryDTO.setPage(offset);
+            questions = questionMapper.selectBySearch(questionQueryDTO);
+        }
         List<QuestionDTO> questionDTOList = new ArrayList<>();
 
         for (Question question : questions) {

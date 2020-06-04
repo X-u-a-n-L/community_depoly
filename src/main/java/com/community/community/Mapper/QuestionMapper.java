@@ -1,5 +1,6 @@
 package com.community.community.Mapper;
 
+import com.community.community.dto.QuestionQueryDTO;
 import com.community.community.model.Question;
 import org.apache.ibatis.annotations.*;
 
@@ -37,4 +38,10 @@ public interface QuestionMapper {
 
     @Select("select * from question where id != #{id} and tag regexp #{tag}")
     List<Question> listRelatedQuestion(Question question);
+
+    @Select("select count(*) from question where lower(title) regexp lower(#{search})")
+    Integer countBySearch(QuestionQueryDTO questionQueryDTO);
+
+    @Select("select * from question where lower(title) regexp lower(#{search}) limit #{page}, #{size}")
+    List<Question> selectBySearch(QuestionQueryDTO questionQueryDTO);
 }
