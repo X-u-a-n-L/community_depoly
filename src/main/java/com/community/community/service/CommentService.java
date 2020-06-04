@@ -70,6 +70,7 @@ public class CommentService {
             if (question == null) {
                 throw new Exception("parent question not found");
             }
+            comment.setCommentCount(0);
             commentMapper.insert(comment);
             questionService.incCommentCount(question.getId());
 
@@ -79,6 +80,9 @@ public class CommentService {
     }
                             //参数：【创建者，收到通知的人，发出通知的人（回复的人），通知的标题，类型（回复问题还是回复评论），问题的id（这个id用来点击返回到问题页面）】
     private void createNotify(Comment comment, Long receiver, String notifierName, String outerTitle, NotificationTypeEnum notificationType, Long outerId) {
+        if (receiver == comment.getCommentator()) {
+            return;                         //自己不收自己的通知
+        }
         Notification notification = new Notification();
         notification.setGmtCreate(System.currentTimeMillis());
         notification.setType(notificationType.getType());
