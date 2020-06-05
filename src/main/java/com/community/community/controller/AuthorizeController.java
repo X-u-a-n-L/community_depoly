@@ -5,6 +5,7 @@ import com.community.community.dto.GithubUser;
 import com.community.community.model.User;
 import com.community.community.provider.GithubProvider;
 import com.community.community.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
 @Controller
+@Slf4j      //print log
 public class AuthorizeController {
 
     @Autowired
@@ -69,7 +71,7 @@ public class AuthorizeController {
         }
         else {
             //登陆失败，重新登陆
-
+            log.error("callback get github error, {}", githubUser);
             return "redirect:/";
         }
         return "redirect:/"; //这个redirect可以改变url为“/”，但是页面还是当前页面 **还需再查一下具体
