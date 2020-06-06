@@ -40,7 +40,7 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
             if(imagesPath.indexOf(".jar")>0){
                 imagesPath = imagesPath.substring(0, imagesPath.indexOf(".jar"));
             }else if(imagesPath.indexOf("classes")>0){
-                imagesPath = "file:"+imagesPath.substring(0, imagesPath.indexOf("classes"));
+                imagesPath = imagesPath.substring(0, imagesPath.indexOf("classes"));
             }
             imagesPath = imagesPath.substring(0, imagesPath.lastIndexOf("/"))+"/image/";
             mImagesPath = imagesPath;
