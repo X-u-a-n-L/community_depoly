@@ -45,7 +45,7 @@ public class FileController {
 
 
         //加个时间戳，尽量避免文件名称重复
-        String path = "/root/photo/" +fileName;
+        String path = "/photo/" +fileName;
         //String path = "E:/fileUpload/" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + "_" + fileName;
         //文件绝对路径
         System.out.print("保存文件绝对路径"+path+"\n");
