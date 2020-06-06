@@ -45,7 +45,7 @@ public class FileController {
 
 
         //加个时间戳，尽量避免文件名称重复
-        String path = "d:/uploadedFile/" +fileName;
+        String path = "/root/photo" +fileName;
         //String path = "E:/fileUpload/" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + "_" + fileName;
         //文件绝对路径
         System.out.print("保存文件绝对路径"+path+"\n");
@@ -67,7 +67,7 @@ public class FileController {
             //上传文件
             file.transferTo(dest); //保存文件
             System.out.print("保存文件路径"+path+"\n");
-            url="http://localhost:8080/image/"+fileName;
+            url="http://139.9.114.118/image/"+fileName;
             int result= uploadedFileService.insertUrl(fileName,path,url);
             System.out.print("插入结果"+result+"\n");
             System.out.print("保存的完整url===="+url+"\n");
