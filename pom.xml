@@ -46,7 +46,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.4.200</version>
+            <version>2.1.210</version>
         </dependency>
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
@@ -103,7 +103,7 @@
                     <dependency>
                         <groupId>com.h2database</groupId>
                         <artifactId>h2</artifactId>
-                        <version>1.4.200</version>  <!--keep the same version of h2 database in dependency-->
+                        <version>2.1.210</version>  <!--keep the same version of h2 database in dependency-->
                     </dependency>
                 </dependencies>
             </plugin>
@@ -115,7 +115,7 @@
                     <dependency>
                         <groupId>com.h2database</groupId>
                         <artifactId>h2</artifactId>
-                        <version>1.4.200</version>  <!--keep the same version of h2 database in dependency-->
+                        <version>2.1.210</version>  <!--keep the same version of h2 database in dependency-->
                     </dependency>
                 </dependencies>
             </plugin>
